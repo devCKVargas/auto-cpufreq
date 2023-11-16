@@ -1,0 +1,39 @@
+name: Sync Upstream
+
+env:
+  # Required, URL to upstream (fork base)
+  UPSTREAM_URL: "https://github.com/AdnanHodzic/auto-cpufreq.git"
+  # Required, token to authenticate bot, could use ${{ secrets.GITHUB_TOKEN }} 
+  # Over here, we use a PAT instead to authenticate workflow file changes.
+  WORKFLOW_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
+  # Optional, defaults to main
+  UPSTREAM_BRANCH: "master"
+  # Optional, defaults to UPSTREAM_BRANCH
+  DOWNSTREAM_BRANCH: "main"
+  # Optional merge arguments
+  MERGE_ARGS: ""
+  # Optional push arguments
+  PUSH_ARGS: ""
+
+# This runs every day on 1801 UTC
+on:
+  schedule:
+    - cron: '1 18 * * *'
+  # Allows manual workflow run (must in default branch to work)
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Rebase Upstream
+        uses: imba-tjd/rebase-upstream-action@0.5
+        with: 
+          # <user>/<repo> or the full HTTP URL
+          upstream: ${{ env.UPSTREAM_URL }} # AdnanHodzic/auto-cpufreq
+          # The upstream branch that is rebased on
+          branch: ${{ env.UPSTREAM_BRANCH }} # optional, default is master
+          # Greater than the number of commits the upstream made in a period
+          # depth: # optional, default is 100
+          # Do the force push in this action
+          # push: # optional, default is true
