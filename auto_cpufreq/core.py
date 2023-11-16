@@ -165,7 +165,10 @@ def app_version():
         except Exception as e:
             print(repr(e))
             pass
-def verify_update():
+
+def check_for_update():
+    # returns True if a new release is available from the GitHub repo
+
     # Specify the repository and package name
     # IT IS IMPORTANT TO  THAT IF THE REPOSITORY STRUCTURE IS CHANGED, THE FOLLOWING FUNCTION NEEDS TO BE UPDATED ACCORDINGLY
     # Fetch the latest release information from GitHub API
@@ -192,10 +195,11 @@ def verify_update():
     # Compare the latest version with the installed version and perform update if necessary
     if latest_version == installed_version:
         print("auto-cpufreq is up to date")
-        exit(0)
+        return False
     else:
         print(f"Updates are available,\nCurrent version: {installed_version}\nLatest version: {latest_version}")
         print("Note that your previous custom settings might be erased with the following update")
+        return True
     
 def new_update(custom_dir):
     os.chdir(custom_dir)
@@ -1242,7 +1246,7 @@ def sysinfo():
                     continue
                 break
             else:
-                for sensor in ["acpitz", "k10temp"]:
+                for sensor in ["acpitz", "k10temp", "zenpower"]:
                     if sensor in temp_sensors:
                         if temp_sensors[sensor][0].current != 0:
                             temp_per_cpu = [temp_sensors[sensor][0].current] * online_cpu_count
